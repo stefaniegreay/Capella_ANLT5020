@@ -1,0 +1,33 @@
+libname mydata '/home/stefaniegreay';
+
+data mydata.teachers;
+set work.import;
+run;
+
+proc contents data=mydata.teachers;
+run;
+
+proc freq data=mydata.teachers;
+tables FirstName LastName Gender Subject;
+run;
+
+proc univariate data=mydata.teachers plots;
+var Salary Years;
+histogram Salary Years;
+run;
+
+data mydata.teachers2;
+set mydata.teachers;
+LastName_c = Compress(LastName);
+run;
+
+data mydata.teachersc;
+set mydata.teachers2;
+Gender_c = UPCASE(Gender);
+/* The teachers' names errors resolve by the compression in the last name (i.e. removing spaces)*/
+/* There are issues in the spelling of the subjects, though. */
+if Subject='Acconting' then Subject='Accounting';
+if Subject='Eglish' then Subject='English';
+if Subject='Mth' then Subject='Math';
+if Employee_ID='E030' then Salary = 73000;
+run;

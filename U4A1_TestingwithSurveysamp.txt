@@ -1,0 +1,30 @@
+libname mydata '/home/stefaniegreay/';
+
+proc surveyselect sampsize=100 data=mydata.claims out=mydata.claimssamp;
+run;
+
+data mydata.claimsampnew;
+set mydata.claimssamp;
+if FirstName='Tom' then FirstName_c='Thomas';
+else Firstname_c=COMPRESS(FirstName);
+run;
+
+data mydata.claimsampnew2;
+set mydata.claimssamp;
+if FirstName='Saly' then do;
+FirstName_c='Sally';
+end;
+else Firstname_c=COMPRESS(FirstName);
+run;
+
+
+data mydata.claimsampnew3;
+set mydata.claimssamp;
+if FirstName='Tom' then FirstName_c='Thomas';
+else if FirstName='Saly' then FirstName_c='Sally';
+else Firstname_c=COMPRESS(FirstName);
+run;
+
+proc freq data=mydata.claimsampnew3;
+tables FirstName_c LastName;
+run;

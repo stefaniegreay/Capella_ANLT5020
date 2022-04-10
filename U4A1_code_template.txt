@@ -1,0 +1,33 @@
+libname mydata '/home/stefaniegreay/';
+
+data mydata.claims;
+set work.import;
+run;
+
+proc contents data=mydata.claims;
+run;
+
+/* Note that Proc Freq is appropriate for categorical variables, but only FirstName
+LastName and MOS were imported as Char.  However, DOS and YOS can be treated the same here
+as they are not true numeric variables, like Charges, and DRG is a categorization represented
+by numbers*/
+proc freq data=mydata.claims;
+tables FirstName LastName MOS DOS YOS DRG;
+run;
+
+proc univariate data=mydata.claims;
+var Charges;
+histogram Charges;
+run;
+
+data mydata.claimsnew;
+set mydata.claims;
+if FirstName='[ENTER INCORRECT FIRSTNAME HERE]' then FirstName_c='[ENTER CORRECTED FIRSTNAME HERE]';
+else FirstName_c=COMPRESS(FirstName);
+if LastName='[ENTER INCORRECT FIRSTNAME HERE]' then LastName_c='[ENTER CORRECTED FIRSTNAME HERE]';
+else LastName_c=COMPRESS(LastName);
+run;
+
+
+
+

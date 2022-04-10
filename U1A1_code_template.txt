@@ -1,0 +1,17 @@
+libname mydata '/home/stefaniegreay';
+
+data mydata.class;
+set work.import;
+run;
+
+proc contents data=mydata.class;
+run;
+
+proc freq data=mydata.class;
+tables <enter qualitative/categorical variables here>;
+run;
+
+proc univariate data=mydata.class; plots;
+var <enter quantitative/numeric variables here>;
+histogram <enter quantitative/numeric variables here>;
+run;

@@ -1,0 +1,29 @@
+options obs=100;
+
+libname mydata '/home/stefaniegreay/';
+
+data mydata.claimsnew;
+set mydata.claims;
+if LastName='Hernadnez' then LastName_c='Hernandez';
+else Lastname_c=COMPRESS(LastName);
+run;
+
+data mydata.claimsnew2;
+set mydata.claims;
+if LastName='Simth' then do;
+LastName_c='Smith';
+end;
+else Lastname_c=COMPRESS(LastName);
+run;
+
+
+data mydata.claimsnew3;
+set mydata.claims;
+if LastName='Hernadnez' then LastName_c='Hernandez';
+else if LastName='Simth' then LastName_c='Smith';
+else Lastname_c=COMPRESS(LastName);
+run;
+
+proc freq data=mydata.claimsnew3;
+tables FirstName LastName_c;
+run;

@@ -1,0 +1,21 @@
+libname mydata '/home/stefaniegreay';
+
+data mydata.patient;
+set work.import;
+run;
+
+proc contents data=mydata.patient;
+run;
+
+proc freq data=mydata.patient;
+tables Event FirstName LastName Gender;
+run;
+
+proc univariate data=mydata.patient plots;
+var After Before Date;
+histogram After Before Date;
+run;
+
+proc means data=mydata.patient;
+var After Before Date;
+run;

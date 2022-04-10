@@ -1,0 +1,90 @@
+libname mydata '/home/stefaniegreay/';
+
+FILENAME Empl '/home/stefaniegreay/Employees.txt';
+
+data mydata.employees;
+              infile Empl delimiter=',' MISSOVER DSD  firstobs=1 ;
+                informat Employee_ID $9. ;
+                informat Employee_Name $32. ;
+                 informat Department_ID $9.;
+                informat Salary best32. ;
+                format Employee_ID $9. ;
+                format Employee_Name $32. ;
+                format Department_ID $9.;
+                format Salary best32. ;
+             input
+                 Employee_ID $
+                 Employee_Name $
+                 Department_ID $
+                 Salary 
+             ;
+run;
+
+FILENAME Depts '/home/stefaniegreay/Departments.txt';
+
+data mydata.departments;
+              infile Depts delimiter=',' MISSOVER DSD  firstobs=1 ;
+                informat Department_ID $9. ;
+                informat Department_Name $32. ;
+                format Department_ID $9. ;
+                format Department_Name $32. ;
+             input
+                 Department_ID $
+                 Department_Name $
+             ;
+run;
+
+FILENAME Sups '/home/stefaniegreay/Supervisors.txt';
+
+data mydata.supervisor;
+              infile Sups delimiter=',' MISSOVER DSD  firstobs=1 ;
+                informat Department_Name $32. ;
+                informat Supervisor $32. ;
+                informat Department_Name $32. ;
+                informat Supervisor $32. ;
+             input
+                 Department_Name $
+                 Supervisor $
+             ;
+run;
+
+proc sort data=mydata.employees;
+by Department_ID;
+run;
+
+proc sort data=mydata.departments;
+by Department_ID;
+run;
+
+data mydata.combined1;
+merge mydata.employees mydata.departments;
+by Department_ID;
+run;
+
+proc sort data=mydata.combined1;
+by Department_Name;
+run;
+
+proc means data=mydata.combined1;
+by Department_Name;
+output out=mydata.combsum min=minsal max=maxsal mean=meansal;
+run;
+
+proc sort data=mydata.supervisor;
+by Department_Name;
+run;
+
+data mydata.combined2;
+merge mydata.combined1 mydata.supervisor;
+by Department_Name;
+run;
+
+proc sort data=mydata.combined2;
+by supervisor;
+run;
+
+proc means data=mydata.combined2;
+by Supervisor;
+output out=mydata.combsum2 min=minsal max=maxsal mean=meansal;
+run;
+

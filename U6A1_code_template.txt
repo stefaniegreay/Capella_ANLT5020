@@ -1,0 +1,42 @@
+libname mydata '/home/stefaniegreay/';
+
+FILENAME REFFILE '/home/stefaniegreay/Claims.txt';
+
+data mydata.claims;
+              infile REFFILE delimiter='09'x MISSOVER DSD  firstobs=2 ;
+                 informat FirstName $9. ;
+                 informat LastName $9. ;
+                informat MOS $9. ;
+                informat DOS best32. ;
+                informat YOS best32. ;
+                informat DRG best32. ;
+                informat Charges best32. ;
+                format FirstName $9. ;
+                format LastName $9. ;
+                format MOS $9. ;
+                format DOS best12. ;
+                format YOS best12. ;
+                format DRG best12. ;
+                format Charges best12. ;
+             input
+                         FirstName  $
+                         LastName  $
+                         MOS  $
+                         DOS
+                         YOS
+                         DRG
+                         Charges
+             ;
+run;
+
+proc contents data=mydata.claims;
+run;
+
+data mydata.claims2;
+length LastName $36.;
+set mydata.claims;
+label MOS="Month of Service" DOS="Day of Service" YOS="Year of Service" DRG="Diagnosis Group";
+format Charges dollar12.2; 
+date = input(catt(DOS,substr(MOS,1,3),YOS),date9.);
+format date mmddyys10.;
+run;
